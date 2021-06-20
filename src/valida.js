@@ -56,3 +56,120 @@ function convertToBoletoArrecadacaoCodigoBarras(codigo) {
     }
     return codigoBarras;
 }
+
+function convertToBoletoBancarioCodigoBarras(codigo){
+    const cod = limpacod(codigo);
+    let codigoBarras = '';
+    // Identificação do banco
+    codigoBarras += cod.substring(0, 3);
+    //Código da moeda
+    codigoBarras += cod.substring(3, 4);
+    // DV
+    codigoBarras += cod.substring(32, 33);
+    // Fator vencimento
+    codigoBarras += cod.substring(33, 37);
+    // Valor nominal
+    codigoBarras += cod.substring(37, 47);
+    // Campo Livre Bloco 1
+    codigoBarras += cod.substring(4, 9);
+    // Campo Livre Bloco 2
+    codigoBarras += cod.substring(10, 20);
+    // Campo Livre Bloco 3
+    codigoBarras += cod.substring(21, 31);
+    return codigoBarras;
+}
+
+function boletoBancarioCodigoBarras(codigo) {
+    const cod = limpacod(codigo);
+    if (!/^[0-9]{44}$/.test(cod)) return false;
+    const DV = cod[4];
+    const bloco = cod.substring(0, 4) + cod.substring(5);
+    return modulo11Bancario(bloco) === Number(DV);
+}
+
+function boletoBancarioLinhaDigitavel(codigo, validarBlocos = false) {
+    const cod = limpacod(codigo);
+    if (!/^[0-9]{47}$/.test(cod)) return false;
+    const blocos = [{
+        num: cod.substring(0, 9),
+        DV: cod.substring(9, 10),
+    },
+    {
+        num: cod.substring(10, 20),
+        DV: cod.substring(20, 21),
+    },
+    {
+        num: cod.substring(21, 31),
+        DV: cod.substring(31, 32),
+    },
+];
+    const validBlocos = validarBlocos ? blocos.every(e => modulo10(e.num) === Number(e.DV)) : true;
+    const validDV = boletoBancarioCodigoBarras(convertToBoletoBancarioCodigoBarras(cod));
+    return validBlocos && validDV;
+}
+
+function boletoBancario(codigo, validarBlocos = false) {
+    const cod = limapacod(codigo);
+    if (cod.lenght === 44) return boletoBancarioCodigoBarras(cod);
+    if (cod.length === 47) return boletoBancarioLinhaDigitavel(codigo, validarBlocos);
+    return false;
+}
+
+function boletoArracadacaoCodigoBarras(codigo) {
+    const cod = limpacod(codigo);
+    if (!/^[0-9]{44}$/.test(cod) || Number(cod[0]) !== 8) return false;
+    const codigoMoeda = Number(cod[2]);
+    const DV = Number(cod[3]);
+    const bloco = cod.substring(0, 3) + cod.substring(4);
+    let modulo;
+    if (codigoMoeda === 6 || codigoMoeda === 7) modulo = modulo10;
+    else if (codigoMoeda === 8 || codigoMoeda === 9) modulo = modulo11Arrecadacao;
+    else return false;
+    return modulo(bloco) === DV;
+}
+
+function boletoArrecadacaoLinhadigitavel(codigo, validarblocos = false) {
+    const cod = limpacod(codigo);
+    if (!/^[0-9]{48}$/.test(cod) || Number(cod[0]) !== 8) return false;
+    const validDV = boletoArrecadacaoCodigoBarras(convertToBoletoArrecadacaoCodigoBarras(cod));
+    if (!validarBlocos) return validDV;
+    const codigoMoeda = Number(cod[2]);
+    let modulo;
+    if (codigoMoeda === 6 || codigoMoeda === 7) modulo = modulo10;
+    else if (codigoMoeda === 8 || codigoMoeda === 9) modulo = modulo11Arrecadacao;
+    else return false;
+    const blocos = Array.from({
+        length: 4
+    }, (v, index) => {
+        const start = (11 * (index)) + index;
+        const end = (11 * (index + 1)) + index;
+        return {
+            num: cod.substring(start, end),
+            DV: cod.substring(end, end + 1),
+        };
+    });
+    const validBlocos = blocos.every(e => modulo(e.num) === Number(e.DV));
+    return validBlocos && validDV;
+}
+
+function boletoArrecadacao(codigo, validarBlocos = false) {
+    const cod = limpacod(codigo);
+    if (cod.length === 44) return boletoArrecadacaoCodigoBarras(cod);
+    if (cod.length === 48) return boletoArrecadacaoLinhaDigitavel(codigo, validarBlocos);
+    return false;
+}
+
+module.exports = {
+    limpacod,
+    modulo10,
+    modulo11Arrecadacao,
+    modulo11Bancario,
+    convertToBoletoArrecadacaoCodigoBarras,
+    convertToBoletoBancarioCodigoBarras,
+    boletoBancarioCodigoBarras,
+    boletoBancarioLinhaDigitavel,
+    boletoBancario,
+    boletoArrecadacaoCodigoBarras,
+    boletoArrecadacaoLinhaDigitavel,
+    boletoArrecadacao
+}

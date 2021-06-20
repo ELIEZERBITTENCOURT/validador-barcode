@@ -17,7 +17,7 @@ exports.dadosBoleto = (codigo) => {
     if (codigo.length != 44 && codigo.length != 46 && codigo.length != 47 && codigo.length != 48) {
       retorno.sucesso = false;
       retorno.codigoInput = codigo;
-      retorno.mensagem = 'O código inserido possui ' + codigo.length + ' dígitos. Por favor insira uma numeração válida. Códigos de barras SEMPRE devem ter 44 caracteres numéricos. Linhas digitáveis podem possuir 46 (boletos de cartão de crédito), 47 (boletos bancários/cobrança) ou 48 (contas convênio/arrecadação) caracteres numéricos. Qualquer caractere não numérico será desconsiderado.';
+      retorno.mensagem = 'O código inserido possui ' + codigo.length + ' dígitos. Por favor insira uma numeração válida.';
     } else if (codigo.substr(0, 1) == '8' && codigo.length == 46 && codigo.length == 47) {
       retorno.sucesso = false;
       retorno.codigoInput = codigo;

@@ -13,8 +13,8 @@ Nesta função é verificado se houve qualquer alteração no código ou linha d
 
 const boletofunc = require('./src/index')
 
-let boletocodigo = "123482938102381039810293810938093819023810982309182301238109238109328091"// retorna false
-let boletocodigo = "10499898100000214032006561000100040099726390"//retorna true
+let boletocodigo = "123482938102381039810293810938093819023810982309182301238109238109328091"// retorna false <br/>
+let boletocodigo = "10499898100000214032006561000100040099726390"//retorna true <br/>
 ### Retorno
 
 false<br/>
@@ -24,7 +24,7 @@ false<br/>
   mensagem: 'O código inserido possui 72 dígitos. Por favor insira uma numeração válida.'<br/>
 }
   
-true
+true<br/>
 {<br/>
   sucesso: true,<br/>
   codigoInput: '10499898100000214032006561000100040099726390',<br/>

@@ -11,33 +11,28 @@ import { dadosBoleto, validarBoleto } from 'validator-barcode'
 
 Nesta função é verificado se houve qualquer alteração no código ou linha digitável do boleto, evitando erros e fraudes (verificando se foi alterado os últimos dígitos do boleto que representam o valor).
 
-const boletofunc = require('boletos-desc-br')
+const boletofunc = require('./src/index')
 
-boletofunc.validarBoleto('836200000005 667800481000 180975657313 001589636081') // retorna true
-boletofunc.validarBoleto('536200000005 667800481000 180975657313 001589636081') // retorna false
-
-## Obtendo Dados do boleto
-
-Nesta função é retornado diversos dados do boleto a partir do código de barras ou linha digitável. PS: Os boleto de arrecadações (como água, luz, prefeitura etc) não são possíveis detectar o vencimento, portanto é retornado o tipo do boleto.
-
-const boletofunc = require('boletos-desc-br')
-
-boletofunc.dadosBoleto('836200000005 667800481000 180975657313 001589636081') // boleto válido
-boletofunc.dadosBoleto('536200000005 667800481000 180975657313 001589636081') // boleto inválido
-
+let boletocodigo = "123482938102381039810293810938093819023810982309182301238109238109328091"// retorna false
+let boletocodigo = "10499898100000214032006561000100040099726390"//retorna true
 ### Retorno
 
-{ sucesso: true,
-  codigoInput: '836200000005667800481000180975657313001589636081',
-  mensagem: 'Boleto válido',
-  tipoCodigoInput: 'LINHA_DIGITAVEL',
-  tipoBoleto: 'CONVENIO_ENERGIA_ELETRICA_E_GAS',
-  codigoBarras: '83620000000667800481001809756573100158963608',
-  linhaDigitavel: '836200000005667800481000180975657313001589636081',
-  vencimento: 'CONVENIO_ENERGIA_ELETRICA_E_GAS',
-  valor: 66.78 }
+false<br/>
+{<br/>
+  sucesso: false,<br/>
+  codigoInput: '123482938102381039810293810938093819023810982309182301238109238109328091',<br/>
+  mensagem: 'O código inserido possui 72 dígitos. Por favor insira uma numeração válida.'<br/>
+}
   
-{ sucesso: false,
-  codigoInput: '536200000005667800481000180975657313001589636081',
-  mensagem:
-   'A validação do dígito verificador falhou. Tem certeza que inseriu a numeração correta?' }
+true
+{<br/>
+  sucesso: true,<br/>
+  codigoInput: '10499898100000214032006561000100040099726390',<br/>
+  mensagem: 'Boleto válido',<br/>
+  tipoCodigoInput: 'CODIGO_DE_BARRAS',<br/>
+  tipoBoleto: 'BANCO',<br/>
+  codigoBarras: '10499898100000214032006561000100040099726390',<br/>
+  linhaDigitavel: '10492006506100010004200997263900989810000021403',<br/>
+  vencimento: '10/5/2022',<br/>
+  valor: 214.03<br/>
+}
